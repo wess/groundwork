@@ -4,6 +4,12 @@ import yaml from "yaml";
 import { ensureDir, renderTemplate } from "../utils/file_helpers";
 import type { Property, SchemaInfo, GenerationPaths, GenerationOptions } from "../types";
 
+// Import templates with { type: "file" }
+import connectionTemplate from "../templates/connection.njk" with { type: "file" };
+import providerTemplate from "../templates/provider.njk" with { type: "file" };
+import routeTemplate from "../templates/route.njk" with { type: "file" };
+import schemaTemplate from "../templates/schema.njk" with { type: "file" };
+
 async function setupDirectories(cwd: string): Promise<GenerationPaths> {
   const baseSrc = path.join(cwd, "src");
   const dbDir = path.join(baseSrc, "db");
@@ -27,7 +33,7 @@ async function setupDirectories(cwd: string): Promise<GenerationPaths> {
 
 async function generateConnection(dbDir: string): Promise<void> {
   const connectionOut = path.join(dbDir, "connection.ts");
-  await renderTemplate("connection.njk", connectionOut, {});
+  await renderTemplate(connectionTemplate, connectionOut, {});
 }
 
 function mapPropertyType(propDef: any): string {
@@ -104,7 +110,7 @@ function buildSchemaInfo(schemaName: string, schemaDef: any): SchemaInfo | null 
 async function generateSchemaFiles(schemaInfo: SchemaInfo, paths: GenerationPaths): Promise<void> {
   // Generate interface → src/db/schema/<entity>.ts
   const schemaOut = path.join(paths.schemaDir, `${schemaInfo.lowerCaseName}.ts`);
-  await renderTemplate("schema.njk", schemaOut, {
+  await renderTemplate(schemaTemplate, schemaOut, {
     Name: schemaInfo.Name,
     lowerCaseName: schemaInfo.lowerCaseName,
     fields: schemaInfo.fields.map((f) => ({
@@ -116,7 +122,7 @@ async function generateSchemaFiles(schemaInfo: SchemaInfo, paths: GenerationPath
 
   // Generate provider → src/db/providers/<entity>.ts
   const providerOut = path.join(paths.providersDir, `${schemaInfo.lowerCaseName}.ts`);
-  await renderTemplate("provider.njk", providerOut, {
+  await renderTemplate(providerTemplate, providerOut, {
     Name: schemaInfo.Name,
     lowerCaseName: schemaInfo.lowerCaseName,
     tableName: schemaInfo.tableName,
@@ -132,7 +138,7 @@ async function generateSchemaFiles(schemaInfo: SchemaInfo, paths: GenerationPath
 
   // Generate route → src/routes/<entity>.ts
   const routeOut = path.join(paths.routesDir, `${schemaInfo.lowerCaseName}.ts`);
-  await renderTemplate("route.njk", routeOut, {
+  await renderTemplate(routeTemplate, routeOut, {
     Name: schemaInfo.Name,
     lowerCaseName: schemaInfo.lowerCaseName,
   });
