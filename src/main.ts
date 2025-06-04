@@ -18,7 +18,7 @@ import type { GenerationOptions } from "./types";
 const cli = new Command()
   .name("grwo")
   .description("Groundwork - API generation and database migration tool")
-  .version("0.0.1");
+  .version("0.0.4");
 
 // Generate command for OpenAPI
 cli
