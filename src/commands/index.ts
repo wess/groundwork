@@ -1,4 +1,4 @@
-export { generate } from './generate';
+export { generate } from "./generate";
 export {
   migrateInit,
   migrateNew,
@@ -7,5 +7,5 @@ export {
   migrateStatus,
   migrateCreate,
   migrateDrop,
-  migrateGenerate
-} from './migrate/index';
+  migrateGenerate,
+} from "./migrate/index";

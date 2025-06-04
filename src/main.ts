@@ -1,8 +1,8 @@
 #!/usr/bin/env bun
 
 import { Command } from "commander";
-import path from 'path';
-import { 
+import path from "node:path";
+import {
   generate,
   migrateInit,
   migrateNew,
@@ -11,9 +11,9 @@ import {
   migrateStatus,
   migrateCreate,
   migrateDrop,
-  migrateGenerate
-} from './commands';
-import { GenerationOptions } from './types';
+  migrateGenerate,
+} from "./commands";
+import type { GenerationOptions } from "./types";
 
 const cli = new Command()
   .name("grwo")
@@ -37,9 +37,7 @@ cli
   });
 
 // Migration commands
-const migrateCmd = cli
-  .command("migrate")
-  .description("Database migration commands");
+const migrateCmd = cli.command("migrate").description("Database migration commands");
 
 // Initialize migrations
 migrateCmd
