@@ -1,6 +1,5 @@
 name: Release
 
-# Grant GITHUB_TOKEN permission to create tags & releases
 permissions:
   contents: write
 
