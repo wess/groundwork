@@ -1,0 +1,85 @@
+/**
+ * @file src/routes/{{ lowerCaseName }}.ts
+ * @description Auto-generated Express router for {{ Name }}. Handles CRUD endpoints.
+ */
+import express, { Request, Response } from 'express';
+import {
+  create{{ Name }},
+  get{{ Name }}ById,
+  update{{ Name }},
+  delete{{ Name }},
+  list{{ Name }}s,
+} from '../db/providers/{{ lowerCaseName }}';
+
+export const {{ lowerCaseName }}Router = express.Router();
+
+/**
+ * Retrieves all {{ Name }} records.
+ * @name GET /{{ lowerCaseName }}s
+ * @returns {Promise<void>} JSON array of {{ Name }}.
+ */
+{{ lowerCaseName }}Router.get('/', async (_req: Request, res: Response) => {
+  const items = await list{{ Name }}s();
+  res.json(items);
+});
+
+/**
+ * Retrieves a single {{ Name }} by ID.
+ * @name GET /{{ lowerCaseName }}s/:id
+ * @param {string} req.params.id - ID of the {{ Name }}.
+ * @returns {Promise<void>} JSON of the {{ Name }} or 404.
+ */
+{{ lowerCaseName }}Router.get('/:id', async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const item = await get{{ Name }}ById(id as any);
+  if (!item) return res.status(404).json({ error: '{{ Name }} not found' });
+  res.json(item);
+});
+
+/**
+ * Creates a new {{ Name }}.
+ * @name POST /{{ lowerCaseName }}s
+ * @param {Object} req.body - New {{ Name }} data.
+ * @returns {Promise<void>} JSON of the created {{ Name }} or 500.
+ */
+{{ lowerCaseName }}Router.post('/', async (req: Request, res: Response) => {
+  try {
+    const newItem = await create{{ Name }}(req.body as any);
+    res.status(201).json(newItem);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to create {{ Name }}' });
+  }
+});
+
+/**
+ * Updates an existing {{ Name }} by ID.
+ * @name PUT /{{ lowerCaseName }}s/:id
+ * @param {string} req.params.id - ID of the {{ Name }} to update.
+ * @param {Object} req.body - Fields to update.
+ * @returns {Promise<void>} JSON of the updated {{ Name }}, 404 if not found, or 500.
+ */
+{{ lowerCaseName }}Router.put('/:id', async (req: Request, res: Response) => {
+  const id = req.params.id;
+  try {
+    const updated = await update{{ Name }}(id as any, req.body as any);
+    if (!updated) return res.status(404).json({ error: '{{ Name }} not found' });
+    res.json(updated);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update {{ Name }}' });
+  }
+});
+
+/**
+ * Deletes a {{ Name }} by ID.
+ * @name DELETE /{{ lowerCaseName }}s/:id
+ * @param {string} req.params.id - ID of the {{ Name }} to delete.
+ * @returns {Promise<void>} 204 on success, 404 if not found.
+ */
+{{ lowerCaseName }}Router.delete('/:id', async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const success = await delete{{ Name }}(id as any);
+  if (!success) return res.status(404).json({ error: '{{ Name }} not found or already deleted' });
+  res.status(204).send();
+});

@@ -1,0 +1,77 @@
+/**
+ * @file src/db/providers/{{ lowerCaseName }}.ts
+ * @description Auto-generated provider for {{ Name }}. Provides basic CRUD operations using pg Pool.
+ */
+import { pool } from '../connection';
+import { {{ Name }} } from '../schema/{{ lowerCaseName }}';
+
+/**
+ * Creates a new {{ Name }} record.
+ * @param {Omit<{{ Name }}, 'id'>} data - Data for the new {{ Name }}.
+ * @returns {Promise<{{ Name }}>} The newly created {{ Name }}.
+ */
+export async function create{{ Name }}(data: Omit<{{ Name }}, 'id'>): Promise<{{ Name }}> {
+  const { rows } = await pool.query(
+    'INSERT INTO {{ tableName }} ({{ fieldListNoId }}) VALUES ({{ paramPlaceholdersNoId }}) RETURNING *',
+    [{{ paramListNoId }}]
+  );
+  return rows[0];
+}
+
+/**
+ * Retrieves a {{ Name }} by its ID.
+ * @param {{ idTsType }} id - The ID of the {{ Name }} to retrieve.
+ * @returns {Promise<{{ Name }} | null>} The {{ Name }} record, or null if not found.
+ */
+export async function get{{ Name }}ById(id: {{ idTsType }}): Promise<{{ Name }} | null> {
+  const { rows } = await pool.query('SELECT * FROM {{ tableName }} WHERE id = $1', [id]);
+  return rows[0] || null;
+}
+
+/**
+ * Updates an existing {{ Name }} record.
+ * @param {{ idTsType }} id - The ID of the {{ Name }} to update.
+ * @param {Partial<Omit<{{ Name }}, 'id'>>} data - Fields to update.
+ * @returns {Promise<{{ Name }} | null>} The updated {{ Name }} record, or null if not found.
+ */
+export async function update{{ Name }}(
+  id: {{ idTsType }},
+  data: Partial<Omit<{{ Name }}, 'id'>>
+): Promise<{{ Name }} | null> {
+  const setClauses: string[] = [];
+  const params: any[] = [];
+  let idx = 1;
+  {% for f in updatableFields %}
+  if (data.{{ f.name }} !== undefined) {
+    setClauses.push('{{ f.column }} = $' + idx);
+    params.push(data.{{ f.name }});
+    idx++;
+  }
+  {% endfor %}
+  if (setClauses.length === 0) {
+    return get{{ Name }}ById(id);
+  }
+  params.push(id);
+  const query = `UPDATE {{ tableName }} SET ${ setClauses.join(', ') } WHERE id = $${ idx } RETURNING *`;
+  const { rows } = await pool.query(query, params);
+  return rows[0] || null;
+}
+
+/**
+ * Deletes a {{ Name }} by its ID.
+ * @param {{ idTsType }} id - The ID of the {{ Name }} to delete.
+ * @returns {Promise<boolean>} True if deletion succeeded, false otherwise.
+ */
+export async function delete{{ Name }}(id: {{ idTsType }}): Promise<boolean> {
+  const { rowCount } = await pool.query('DELETE FROM {{ tableName }} WHERE id = $1', [id]);
+  return rowCount > 0;
+}
+
+/**
+ * Retrieves all {{ Name }} records.
+ * @returns {Promise<{{ Name }}[]>} An array of all {{ Name }} records.
+ */
+export async function list{{ Name }}s(): Promise<{{ Name }}[]> {
+  const { rows } = await pool.query('SELECT * FROM {{ tableName }}');
+  return rows;
+}

@@ -1,0 +1,8 @@
+/**
+ * Interface representing a {{ Name }}.
+ */
+export interface {{ Name }} {
+{% for field in fields %}
+  {{ field.name }}{% if not field.required %}?{% endif %}: {{ field.tsType }};
+{% endfor %}
+}
